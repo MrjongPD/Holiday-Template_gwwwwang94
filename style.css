@@ -1,0 +1,24 @@
+body { margin:0; font-family:'Noto Sans KR',sans-serif; background:#FAFAFA; color:#333; }
+.header { display:flex; justify-content:space-between; align-items:center; padding:20px; background:#fff; box-shadow:0 4px 10px rgba(0,0,0,0.05);}
+.menu a { margin-left:15px; text-decoration:none; color:#333; font-weight:500; cursor:pointer; }
+.screen { display:none; padding:40px; }
+.screen.active { display:block; }
+.back-btn { background:none; border:none; color:#70C1B3; cursor:pointer; margin-bottom:20px; }
+h1,h2 { font-family:'Pretendard',sans-serif; }
+#start-btn, .action-btn, #download-btn { background:#70C1B3; color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; margin-top:20px; }
+#start-btn:hover, .action-btn:hover, #download-btn:hover { filter:brightness(1.1); }
+
+/* 탭 */
+.template-tabs { display:flex; gap:10px; margin:20px 0; }
+.tab-btn { flex:1; padding:10px; border:1px solid #ccc; background:#fff; cursor:pointer; border-radius:6px; }
+.tab-btn.active { background:#70C1B3; color:#fff; border-color:#70C1B3; }
+
+/* 커스터마이징 폼 */
+#customize-container label { display:block; margin:10px 0; }
+#customize-container input, #customize-container select, #customize-container textarea {
+  width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-size:14px;
+}
+
+/* 미리보기 */
+.preview { position:relative; width:800px; background:#fff; box-shadow:0 4px 10px rgba(0,0,0,0.05); padding:20px; }
+.tpl-preview { display:none; width:100%; }
