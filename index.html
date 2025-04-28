@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>휴진 시안 제작기</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+<h1>휴진 시안 제작기</h1>
+
+<div class="control-panel">
+  <label><span class="material-icons">upload</span> 로고 업로드: <input type="file" id="logoUpload"></label>
+  <input type="range" id="logoSize" min="50" max="300" value="150">
+  <button onclick="rotateLogo()"><span class="material-icons">rotate_right</span> 로고 회전</button><br>
+
+  <label><span class="material-icons">upload</span> 배경 업로드: <input type="file" id="bgUpload"></label>
+  <label>배경 스타일:
+    <select id="bgStyle">
+      <option value="cover">Fit Cover</option>
+      <option value="no-repeat">No Repeat</option>
+    </select>
+  </label><br>
+
+  <label>시안 사이즈:
+    <select id="canvasSize">
+      <option value="1080x1920">1080x1920</option>
+      <option value="1920x1080">1920x1080</option>
+      <option value="1080x1080">1080x1080</option>
+      <option value="A4-portrait">A4 세로 (210x297)</option>
+      <option value="A4-landscape">A4 가로 (297x210)</option>
+    </select>
+  </label>
+</div>
+
+<div class="input-panel">
+  <input type="text" id="title" placeholder="예: 5월 5일(일) 어린이날 휴진" value="5월 5일(일) 어린이날 휴진">
+  <textarea id="message">편안한 진료를 위해 항상 노력하겠습니다.</textarea>
+  <button onclick="generate()">시안 만들기</button>
+</div>
+
+<div id="preview">
+  <div id="logo"></div>
+  <h2 id="prevTitle"></h2>
+  <p id="prevMessage"></p>
+  <div id="watermark">(주)그룹디</div>
+</div>
+
+<button onclick="download()"><span class="material-icons">download</span> 이미지로 저장</button>
+
+<footer>
+  <small>© (주)그룹디 제작 | 2025</small>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="js/script.js"></script>
+
+</body>
+</html>
