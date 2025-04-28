@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>휴진안내 생성기</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Pretendard:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">휴진안내 생성기</div>
+    <nav class="menu">
+      <a href="#" data-screen="template-screen">템플릿 둘러보기</a>
+      <a href="#" data-screen="usage-screen">이용방법</a>
+      <a href="#" data-screen="login-screen">로그인</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ▶ 메인 화면 -->
+    <section id="main-screen" class="screen active">
+      <div class="intro">
+        <h1>휴진안내, 3분만에 완성하세요.</h1>
+        <p class="subtitle">날짜만 선택하면, 로고만 올리면 끝.</p>
+        <button id="start-btn" class="start-btn">휴진안내 만들기</button>
+      </div>
+      <div class="template-slider">
+        <div class="slider-container">
+          <div class="slide active">포스터형</div>
+          <div class="slide">달력형</div>
+          <div class="slide">요일박스형</div>
+          <div class="slide">심플캘린더형</div>
+        </div>
+        <div class="slider-controls">
+          <button id="prev">◀</button>
+          <button id="next">▶</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ▶ 템플릿 둘러보기 -->
+    <section id="template-screen" class="screen">
+      <button class="back-btn">← 이전으로</button>
+      <h2>템플릿 선택</h2>
+      <div class="template-list">
+        <div class="tpl" data-tpl="poster">포스터형</div>
+        <div class="tpl" data-tpl="calendar">달력형</div>
+        <div class="tpl" data-tpl="weekday">요일박스형</div>
+        <div class="tpl" data-tpl="simple">심플캘린더형</div>
+      </div>
+      <button id="tpl-select-btn" class="action-btn">선택 완료</button>
+    </section>
+
+    <!-- ▶ 이용방법 -->
+    <section id="usage-screen" class="screen">
+      <button class="back-btn">← 이전으로</button>
+      <h2>이용방법</h2>
+      <ol>
+        <li>템플릿을 고른 후 “휴진안내 만들기”를 클릭하세요.</li>
+        <li>날짜·제목·로고를 업로드하고 스타일을 커스터마이즈합니다.</li>
+        <li>미리보기를 확인한 후 “이미지로 저장” 버튼을 눌러 다운로드!</li>
+      </ol>
+    </section>
+
+    <!-- ▶ 로그인/회원가입 -->
+    <section id="login-screen" class="screen">
+      <button class="back-btn">← 이전으로</button>
+      <h2>로그인 / 회원가입</h2>
+      <form id="login-form">
+        <label>이메일: <input type="email" required></label>
+        <label>비밀번호: <input type="password" required></label>
+        <button type="submit" class="action-btn">로그인</button>
+      </form>
+      <p>계정이 없으신가요? <a href="#" id="show-signup">회원가입</a></p>
+      <form id="signup-form" style="display:none">
+        <label>이메일: <input type="email" required></label>
+        <label>비밀번호: <input type="password" required></label>
+        <button type="submit" class="action-btn">회원가입</button>
+      </form>
+    </section>
+
+    <!-- ▶ 휴진 생성 화면 -->
+    <section id="creation-screen" class="screen">
+      <button class="back-btn">← 이전으로</button>
+      <h2>Step 1: 휴진 기간 선택</h2>
+      <label>시작일: <input type="date" id="start-date"></label>
+      <label>종료일: <input type="date" id="end-date"></label>
+
+      <h2>Step 2: 휴진 제목 입력</h2>
+      <input type="text" id="title-input" placeholder="예: 5월 진료 안내">
+
+      <h2>Step 3: 로고 업로드</h2>
+      <input type="file" id="logo-upload">
+
+      <h2>Step 4: 스타일 커스터마이즈</h2>
+      <label>폰트:
+        <select id="font-select">
+          <option value="Noto Sans KR">Noto Sans KR</option>
+          <option value="Pretendard">Pretendard</option>
+          <option value="Nanum Gothic">Nanum Gothic</option>
+          <option value="Nanum Brush Script">나눔손글씨 붓</option>
+          <option value="S-Core Dream">S-Core Dream</option>
+        </select>
+      </label>
+      <label>크기:
+        <select id="font-size">
+          <option>12</option><option>16</option><option>20</option><option>24</option>
+          <option>28</option><option>32</option><option>36</option><option>40</option>
+          <option>48</option><option>60</option>
+        </select>px
+      </label>
+      <label>색상: <input type="color" id="font-color" value="#333333"></label>
+      <label><input type="checkbox" id="font-bold"> Bold</label>
+
+      <h2>Step 5: 미리보기</h2>
+      <div id="preview" class="preview">
+        <div id="logo-preview"></div>
+        <h3 id="title-preview">여기에 제목이 표시됩니다</h3>
+        <p id="date-preview">휴진기간이 표시됩니다</p>
+      </div>
+
+      <button id="download-btn" class="download-btn">이미지로 저장</button>
+    </section>
+  </main>
+
+  <!-- html2canvas -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
