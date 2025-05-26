@@ -1,97 +1,88 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', ()=>{
   const screens    = document.querySelectorAll('.screen');
   const startBtn   = document.getElementById('start-btn');
-  const backBtn    = document.querySelector('.back-btn');
+  const backBtns   = document.querySelectorAll('.back-btn');
   const nextBtn    = document.getElementById('tpl-next-btn');
-  const tabs       = document.querySelectorAll('.tab-btn');
   const previewBtn = document.getElementById('preview-btn');
-  let selectedTpl  = 'calendar';
+  const downloadBtn= document.getElementById('download-btn');
+  const tabs       = document.querySelectorAll('.tab-btn');
+  let selectedTpl  = 'poster';
 
-  function showScreen(id) {
-    screens.forEach(s => s.id === id
-      ? s.classList.add('active')
-      : s.classList.remove('active')
-    );
+  function showScreen(id){
+    screens.forEach(s=>s.id===id?s.classList.add('active'):s.classList.remove('active'));
   }
 
-  // 1) 시작 → 템플릿 선택
-  startBtn.addEventListener('click', () => showScreen('template-screen'));
-  backBtn.addEventListener('click', () => {
-    const curr = document.querySelector('.screen.active').id;
-    if (curr === 'template-screen') showScreen('main-screen');
-    else if (curr === 'creation-screen') showScreen('template-screen');
+  // 시작
+  startBtn.addEventListener('click', ()=> showScreen('template-screen'));
+  backBtns.forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const cur=document.querySelector('.screen.active').id;
+      if(cur==='template-screen') showScreen('main-screen');
+      if(cur==='creation-screen') showScreen('template-screen');
+      if(cur==='preview-screen') showScreen('creation-screen');
+    });
   });
 
-  // 2) 템플릿 탭 선택
-  tabs.forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabs.forEach(b => b.classList.remove('active'));
+  // 탭 선택
+  tabs.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tabs.forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       selectedTpl = btn.dataset.tpl;
     });
   });
 
-  // 3) 다음 → 달력(또는 포스터) 화면
-  nextBtn.addEventListener('click', () => {
-    if (selectedTpl !== 'calendar') {
-      return alert('현재는 달력형만 지원됩니다.');
-    }
+  // 다음 → 커스터마이즈
+  nextBtn.addEventListener('click', ()=>{
     showScreen('creation-screen');
-    renderCalendar();
   });
 
-  // 4) 달력 렌더링
-  function renderCalendar() {
-    const container = document.getElementById('calendar-container');
-    container.innerHTML = ''; 
-    const today = new Date();
-    const year  = today.getFullYear();
-    const month = today.getMonth(); // 0-based
+  // 미리보기 → 포스터 생성
+  previewBtn.addEventListener('click', ()=>{
+    showScreen('preview-screen');
+    const p = document.getElementById('poster-preview');
+    // 입력값 읽기
+    const clinic = document.querySelector('[name=clinic]').value;
+    const title  = document.querySelector('[name=title]').value;
+    const desc   = document.querySelector('[name=desc]').value;
+    const period = document.querySelector('[name=period]').value;
+    const open   = document.querySelector('[name=openDate]').value;
+    const color  = document.querySelector('[name=primaryColor]').value;
+    const bgUrl  = document.querySelector('[name=bgUrl]').value;
 
-    // 요일 헤더
-    const grid = document.createElement('div');
-    grid.className = 'calendar';
-    ['일','월','화','수','목','금','토'].forEach(w => {
-      const d = document.createElement('div');
-      d.className = 'day header';
-      d.textContent = w;
-      grid.append(d);
-    });
+    // CSS 변수, 이미지, 텍스트 반영
+    p.style.setProperty('--primary', color);
+    if(bgUrl) p.style.setProperty('--bg-url', `url('${bgUrl}')`);
 
-    // 빈 칸
-    const firstDay = new Date(year, month, 1).getDay();
-    for (let i=0; i<firstDay; i++) {
-      const empty = document.createElement('div');
-      empty.className = 'day disabled';
-      grid.append(empty);
-    }
+    p.innerHTML = `
+      <div class="bg"></div>
+      <div class="content">
+        <div class="header">
+          <h1>${title}</h1>
+          <p>${desc}</p>
+        </div>
+        <div class="period-box">
+          <div class="item">
+            <div class="label">휴진기간</div>
+            <div class="value">${period}</div>
+          </div>
+          <div class="item">
+            <div class="label">정상진료</div>
+            <div class="value">${open}</div>
+          </div>
+        </div>
+        <div class="footer">${clinic}</div>
+      </div>
+    `;
+  });
 
-    // 날짜 칸
-    const daysInMonth = new Date(year, month+1, 0).getDate();
-    for (let d=1; d<=daysInMonth; d++) {
-      const cell = document.createElement('div');
-      cell.className = 'day';
-      cell.textContent = d;
-      cell.addEventListener('click', () => {
-        if (cell.classList.toggle('selected')) {
-          cell.textContent = '휴진';
-        } else {
-          cell.textContent = d;
-        }
-      });
-      grid.append(cell);
-    }
-
-    container.append(grid);
-  }
-
-  // 5) 미리보기(PNG 저장)
-  previewBtn.addEventListener('click', () => {
-    const container = document.getElementById('calendar-container');
-    html2canvas(container).then(canvas => {
-      const link = document.createElement('a');
-      link.download = `휴진달력_${new Date().toISOString().slice(0,7)}.png`;
-      link.href = canvas.toDataURL();
+  // 다운로드
+  downloadBtn.addEventListener('click', ()=>{
+    const target = document.getElementById('poster-preview');
+    html2canvas(target).then(canvas=>{
+      const link=document.createElement('a');
+      link.download='휴진안내_포스터.png';
+      link.href=canvas.toDataURL();
       link.click();
     });
   });
