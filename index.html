@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>휴진안내 생성기</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Pretendard:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Pretendard:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
 </head>
 <body>
   <header class="header">
     <div class="logo">휴진안내 생성기</div>
     <nav class="menu">
+      <a href="#" data-screen="main-screen">메인</a>
       <a href="#" data-screen="template-screen">템플릿</a>
       <a href="#" data-screen="usage-screen">이용방법</a>
       <a href="#" data-screen="login-screen">로그인</a>
@@ -18,47 +22,51 @@
   </header>
 
   <main>
-    <!-- ► 메인 화면 -->
+    <!-- 메인 화면 -->
     <section id="main-screen" class="screen active">
       <h1>휴진안내, 3분만에 완성하세요.</h1>
-      <button id="start-btn">휴진안내 만들기</button>
+      <button id="start-btn" class="action-btn">휴진안내 만들기</button>
     </section>
 
-    <!-- ► 템플릿 선택 -->
+    <!-- 템플릿 선택 화면 -->
     <section id="template-screen" class="screen">
       <button class="back-btn">← 이전</button>
       <h2>템플릿 선택</h2>
       <div class="template-tabs">
-        <button data-tpl="poster" class="tab-btn active">포스터형</button>
-        <button data-tpl="calendar" class="tab-btn">달력형</button>
-        <button data-tpl="weekday" class="tab-btn">요일박스형</button>
-        <button data-tpl="simple" class="tab-btn">심플형</button>
+        <button type="button" class="tab-btn active" data-tpl="poster">포스터형</button>
+        <button type="button" class="tab-btn"        data-tpl="calendar">달력형</button>
+        <button type="button" class="tab-btn"        data-tpl="weekday">요일박스형</button>
+        <button type="button" class="tab-btn"        data-tpl="simple">심플형</button>
       </div>
       <button id="tpl-next-btn" class="action-btn">다음</button>
     </section>
 
-    <!-- ► 생성 화면 -->
+    <!-- 커스터마이즈 화면 -->
     <section id="creation-screen" class="screen">
       <button class="back-btn">← 이전</button>
       <h2>휴진안내 만들기</h2>
-      <div id="customize-container"></div>
+      <div id="customize-container">
+        <!-- JS로 여기에 선택된 템플릿용 입력폼을 동적으로 추가 -->
+      </div>
       <button id="preview-btn" class="action-btn">미리보기</button>
     </section>
 
-    <!-- ► 미리보기 & 저장 -->
+    <!-- 미리보기 화면 -->
     <section id="preview-screen" class="screen">
       <button class="back-btn">← 이전</button>
       <h2>미리보기</h2>
       <div id="preview" class="preview">
-        <div id="tpl-poster" class="tpl-preview"></div>
-        <div id="tpl-calendar" class="tpl-preview"></div>
-        <div id="tpl-weekday" class="tpl-preview"></div>
-        <div id="tpl-simple" class="tpl-preview"></div>
+        <!-- 각 템플릿별 미리보기 -->
+        <div id="preview-poster"  class="tpl-preview"></div>
+        <div id="preview-calendar" class="tpl-preview" style="display:none;"></div>
+        <div id="preview-weekday"  class="tpl-preview" style="display:none;"></div>
+        <div id="preview-simple"   class="tpl-preview" style="display:none;"></div>
       </div>
-      <button id="download-btn">이미지로 저장</button>
+      <button id="download-btn" class="action-btn">이미지로 저장</button>
     </section>
   </main>
 
+  <!-- html2canvas & 스크립트 -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="script.js"></script>
 </body>
