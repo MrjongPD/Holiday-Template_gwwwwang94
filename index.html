@@ -8,65 +8,31 @@
 </head>
 <body>
   <main>
-    <!-- 시작화면 -->
+    <!-- 1) 시작 화면 -->
     <section id="main-screen" class="screen active">
       <h1>휴진안내, 3분만에 완성하세요.</h1>
       <button id="start-btn" class="action-btn">휴진안내 만들기</button>
     </section>
 
-    <!-- 템플릿 선택 -->
+    <!-- 2) 템플릿 선택 -->
     <section id="template-screen" class="screen">
       <button class="back-btn">← 이전</button>
       <h2>템플릿 선택</h2>
       <div class="template-tabs">
-        <button class="tab-btn active" data-tpl="poster">포스터형</button>
-        <button class="tab-btn"        data-tpl="calendar">달력형</button>
+        <button type="button" class="tab-btn active" data-tpl="poster">포스터형</button>
+        <button type="button" class="tab-btn"        data-tpl="calendar">달력형</button>
       </div>
       <button id="tpl-next-btn" class="action-btn">다음</button>
     </section>
 
-    <!-- 커스터마이즈 화면 -->
+    <!-- 3) 커스터마이즈 화면 -->
     <section id="creation-screen" class="screen">
       <button class="back-btn">← 이전</button>
-      <h2>포스터형 휴진안내 설정</h2>
-      <div id="poster-form">
-        <div class="field"><label>치과 이름</label>
-          <input type="text" name="clinic" value="OOO치과"/>
-        </div>
-        <div class="field"><label>타이틀 문구</label>
-          <input type="text" name="title" value="여름휴가 휴진안내"/>
-        </div>
-        <div class="field"><label>상단 설명</label>
-          <textarea name="desc">무더운 여름을 맞아 아래와 같이 휴진을 실시하오니 예약과 진료에 착오 없으시길 바랍니다.</textarea>
-        </div>
-        <div class="field"><label>휴진 기간</label>
-          <input type="text" name="period" value="08월 01일(목) ~ 08월 05일(월)"/>
-        </div>
-        <div class="field"><label>정상진료 시작일</label>
-          <input type="text" name="openDate" value="08월 06일(화)"/>
-        </div>
-        <div class="field">
-          <label>주요 색상</label>
-          <input type="color" name="primaryColor" value="#00aaff"/>
-        </div>
-        <div class="field">
-          <label>배경 이미지 URL</label>
-          <input type="text" name="bgUrl" placeholder="https://...jpg"/>
-        </div>
-      </div>
-      <button id="preview-btn" class="action-btn">미리보기</button>
-    </section>
+      <h2>설정하기</h2>
 
-    <!-- 미리보기 -->
-    <section id="preview-screen" class="screen">
-      <button class="back-btn">← 이전</button>
-      <h2>미리보기</h2>
-      <div id="poster-preview"></div>
-      <button id="download-btn" class="action-btn">이미지로 저장</button>
-    </section>
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+      <!-- 포스터 폼 -->
+      <div id="poster-form" class="form-area">
+        <div class="field"><label>치과 이름</label><input type="text" name="clinic" value="OOO치과"/></div>
+        <div class="field"><label>타이틀 문구</label><input type="text" name="title" value="여름휴가 휴진안내"/></div>
+        <div class="field"><label>상단 설명</label><textarea name="desc">무더운 여름을 맞아 아래와 같이 휴진을 실시하오니…</textarea></div>
+        <div class="field"><label>휴진 기간</label><input type="text" name="pe
