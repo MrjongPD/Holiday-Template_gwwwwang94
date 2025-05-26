@@ -1,88 +1,128 @@
-document.addEventListener('DOMContentLoaded', ()=>{
-  const screens    = document.querySelectorAll('.screen');
-  const startBtn   = document.getElementById('start-btn');
-  const backBtns   = document.querySelectorAll('.back-btn');
-  const nextBtn    = document.getElementById('tpl-next-btn');
-  const previewBtn = document.getElementById('preview-btn');
-  const downloadBtn= document.getElementById('download-btn');
-  const tabs       = document.querySelectorAll('.tab-btn');
-  let selectedTpl  = 'poster';
+document.addEventListener('DOMContentLoaded', () => {
+  // 화면 & 요소
+  const screens     = document.querySelectorAll('.screen');
+  const startBtn    = document.getElementById('start-btn');
+  const backBtns    = document.querySelectorAll('.back-btn');
+  const tabs        = document.querySelectorAll('.tab-btn');
+  const nextBtn     = document.getElementById('tpl-next-btn');
+  const previewBtn  = document.getElementById('preview-btn');
+  const downloadBtn = document.getElementById('download-btn');
 
-  function showScreen(id){
-    screens.forEach(s=>s.id===id?s.classList.add('active'):s.classList.remove('active'));
+  const posterForm  = document.getElementById('poster-form');
+  const calendarCon = document.getElementById('calendar-container');
+  const previewDiv  = document.getElementById('preview');
+
+  let selectedTpl = 'poster';
+
+  // 화면 전환
+  function showScreen(id) {
+    screens.forEach(s => s.id === id ? s.classList.add('active') : s.classList.remove('active'));
   }
 
-  // 시작
-  startBtn.addEventListener('click', ()=> showScreen('template-screen'));
-  backBtns.forEach(b=>{
-    b.addEventListener('click', ()=>{
-      const cur=document.querySelector('.screen.active').id;
-      if(cur==='template-screen') showScreen('main-screen');
-      if(cur==='creation-screen') showScreen('template-screen');
-      if(cur==='preview-screen') showScreen('creation-screen');
-    });
-  });
+  // 1) 시작 → 템플릿 선택
+  startBtn.addEventListener('click', () => showScreen('template-screen'));
+
+  // 뒤로가기
+  backBtns.forEach(btn => btn.addEventListener('click', () => {
+    const curr = document.querySelector('.screen.active').id;
+    if (curr === 'template-screen')   showScreen('main-screen');
+    if (curr === 'creation-screen')   showScreen('template-screen');
+    if (curr === 'preview-screen')    showScreen('creation-screen');
+  }));
 
   // 탭 선택
-  tabs.forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      tabs.forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedTpl = btn.dataset.tpl;
-    });
-  });
+  tabs.forEach(btn => btn.addEventListener('click', () => {
+    tabs.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedTpl = btn.dataset.tpl;
+  }));
 
-  // 다음 → 커스터마이즈
-  nextBtn.addEventListener('click', ()=>{
+  // 다음 → 커스터마이즈 화면
+  nextBtn.addEventListener('click', () => {
     showScreen('creation-screen');
+    // 폼/달력 초기화
+    posterForm.style.display  = selectedTpl === 'poster'  ? '' : 'none';
+    calendarCon.style.display = selectedTpl === 'calendar'? '' : 'none';
+    if (selectedTpl === 'calendar') renderCalendar();
   });
 
-  // 미리보기 → 포스터 생성
-  previewBtn.addEventListener('click', ()=>{
+  // 달력 렌더링
+  function renderCalendar() {
+    calendarCon.innerHTML = '';
+    const now = new Date(), y = now.getFullYear(), m = now.getMonth();
+    const head = document.createElement('h3');
+    head.textContent = `${y}년 ${m+1}월`; calendarCon.append(head);
+
+    const grid = document.createElement('div');
+    grid.className = 'calendar';
+    ['일','월','화','수','목','금','토'].forEach(w => {
+      const d = document.createElement('div');
+      d.className = 'day header'; d.textContent = w; grid.append(d);
+    });
+    const first = new Date(y,m,1).getDay();
+    for (let i=0; i<first; i++) {
+      const e = document.createElement('div');
+      e.className = 'day disabled'; grid.append(e);
+    }
+    const days = new Date(y,m+1,0).getDate();
+    for (let d=1; d<=days; d++){
+      const cell = document.createElement('div');
+      cell.className = 'day'; cell.textContent = d;
+      cell.addEventListener('click', ()=>{
+        if (cell.classList.toggle('selected')) cell.textContent = '휴진';
+        else { cell.textContent = d; }
+      });
+      grid.append(cell);
+    }
+    calendarCon.append(grid);
+  }
+
+  // 미리보기 (포스터/달력 분기)
+  previewBtn.addEventListener('click', () => {
     showScreen('preview-screen');
-    const p = document.getElementById('poster-preview');
-    // 입력값 읽기
-    const clinic = document.querySelector('[name=clinic]').value;
-    const title  = document.querySelector('[name=title]').value;
-    const desc   = document.querySelector('[name=desc]').value;
-    const period = document.querySelector('[name=period]').value;
-    const open   = document.querySelector('[name=openDate]').value;
-    const color  = document.querySelector('[name=primaryColor]').value;
-    const bgUrl  = document.querySelector('[name=bgUrl]').value;
+    previewDiv.innerHTML = '';
 
-    // CSS 변수, 이미지, 텍스트 반영
-    p.style.setProperty('--primary', color);
-    if(bgUrl) p.style.setProperty('--bg-url', `url('${bgUrl}')`);
+    if (selectedTpl === 'calendar') {
+      // 달력 복제
+      const clone = calendarCon.cloneNode(true);
+      clone.id = ''; previewDiv.append(clone);
+    } else {
+      // 포스터 렌더
+      const clinic = posterForm.querySelector('[name=clinic]').value;
+      const title  = posterForm.querySelector('[name=title]').value;
+      const desc   = posterForm.querySelector('[name=desc]').value;
+      const period = posterForm.querySelector('[name=period]').value;
+      const open   = posterForm.querySelector('[name=openDate]').value;
+      const color  = posterForm.querySelector('[name=primaryColor]').value;
+      const bgUrl  = posterForm.querySelector('[name=bgUrl]').value;
 
-    p.innerHTML = `
-      <div class="bg"></div>
-      <div class="content">
-        <div class="header">
-          <h1>${title}</h1>
-          <p>${desc}</p>
-        </div>
-        <div class="period-box">
-          <div class="item">
-            <div class="label">휴진기간</div>
-            <div class="value">${period}</div>
-          </div>
-          <div class="item">
-            <div class="label">정상진료</div>
-            <div class="value">${open}</div>
-          </div>
-        </div>
-        <div class="footer">${clinic}</div>
-      </div>
-    `;
+      const box = document.createElement('div');
+      box.className = 'tpl-preview';
+      // CSS 변수 적용
+      box.style.setProperty('--primary', color);
+      if (bgUrl) box.style.background = `url('${bgUrl}') center/cover`;
+
+      box.innerHTML = `
+        <h2 style="color: var(--primary);">${title}</h2>
+        <p>${desc}</p>
+        <p><strong>휴진기간:</strong> ${period}</p>
+        <p><strong>정상진료:</strong> ${open}</p>
+        <footer style="margin-top:16px;">${clinic}</footer>
+      `;
+      previewDiv.append(box);
+    }
   });
 
   // 다운로드
-  downloadBtn.addEventListener('click', ()=>{
-    const target = document.getElementById('poster-preview');
-    html2canvas(target).then(canvas=>{
-      const link=document.createElement('a');
-      link.download='휴진안내_포스터.png';
-      link.href=canvas.toDataURL();
+  downloadBtn.addEventListener('click', () => {
+    const target = previewDiv.firstElementChild;
+    if (!target) return alert('미리보기를 먼저 확인하세요.');
+    html2canvas(target).then(canvas => {
+      const link = document.createElement('a');
+      link.download = selectedTpl === 'calendar'
+        ? `휴진달력_${new Date().toISOString().slice(0,7)}.png`
+        : `휴진안내_포스터.png`;
+      link.href = canvas.toDataURL('image/png');
       link.click();
     });
   });
