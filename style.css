@@ -1,157 +1,99 @@
-/* 기본 리셋 & 폰트 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body {
-  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-  background: #f9f9f9;
-  color: #333;
-  line-height: 1.5;
-}
-a { text-decoration: none; color: inherit; }
-button {
-  font-family: inherit;
-  border: none;
-  outline: none;
-  background: none;
-  cursor: pointer;
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const screens    = document.querySelectorAll('.screen');
+  const startBtn   = document.getElementById('start-btn');
+  const backBtn    = document.querySelector('.back-btn');
+  const nextBtn    = document.getElementById('tpl-next-btn');
+  const tabs       = document.querySelectorAll('.tab-btn');
+  const previewBtn = document.getElementById('preview-btn');
+  let selectedTpl  = 'calendar';
 
-/* 헤더 */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-.logo {
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-.menu a {
-  margin-left: 16px;
-  font-size: 0.9rem;
-  color: #555;
-}
-.menu a:hover {
-  color: #6ec1a4;
-}
+  function showScreen(id) {
+    screens.forEach(s => s.id === id
+      ? s.classList.add('active')
+      : s.classList.remove('active')
+    );
+  }
 
-/* 화면별 공통 */
-main {
-  max-width: 640px;
-  margin: 40px auto;
-  padding: 0 16px;
-}
-.screen {
-  display: none;
-}
-.screen.active {
-  display: block;
-}
+  // 1) 시작 → 템플릿 선택
+  startBtn.addEventListener('click', () => showScreen('template-screen'));
+  backBtn.addEventListener('click', () => {
+    const curr = document.querySelector('.screen.active').id;
+    if (curr === 'template-screen') showScreen('main-screen');
+    else if (curr === 'creation-screen') showScreen('template-screen');
+  });
 
-/* 메인 화면 */
-#main-screen {
-  text-align: center;
-}
-#main-screen h1 {
-  font-size: 1.75rem;
-  margin-bottom: 24px;
-}
-#start-btn {
-  padding: 12px 28px;
-  background: #6ec1a4;
-  color: #fff;
-  border-radius: 4px;
-  font-size: 1rem;
-}
+  // 2) 템플릿 탭 선택
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedTpl = btn.dataset.tpl;
+    });
+  });
 
-/* 뒤로가기 버튼 */
-.back-btn {
-  display: inline-block;
-  margin-bottom: 16px;
-  color: #6ec1a4;
-  font-size: 0.9rem;
-}
-.back-btn:hover {
-  text-decoration: underline;
-}
+  // 3) 다음 → 달력(또는 포스터) 화면
+  nextBtn.addEventListener('click', () => {
+    if (selectedTpl !== 'calendar') {
+      return alert('현재는 달력형만 지원됩니다.');
+    }
+    showScreen('creation-screen');
+    renderCalendar();
+  });
 
-/* 탭 (템플릿 선택) */
-.template-tabs {
-  display: flex;
-  gap: 12px;
-  margin: 24px 0;
-}
-.tab-btn {
-  flex: 1;
-  padding: 10px 0;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.95rem;
-  transition: background .2s, border-color .2s;
-}
-.tab-btn.active {
-  background: #6ec1a4;
-  border-color: #6ec1a4;
-  color: #fff;
-}
+  // 4) 달력 렌더링
+  function renderCalendar() {
+    const container = document.getElementById('calendar-container');
+    container.innerHTML = ''; 
+    const today = new Date();
+    const year  = today.getFullYear();
+    const month = today.getMonth(); // 0-based
 
-/* 입력폼 (커스터마이즈) */
-.field {
-  margin-bottom: 16px;
-}
-.field label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 500;
-}
-.field input {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.95rem;
-}
+    // 요일 헤더
+    const grid = document.createElement('div');
+    grid.className = 'calendar';
+    ['일','월','화','수','목','금','토'].forEach(w => {
+      const d = document.createElement('div');
+      d.className = 'day header';
+      d.textContent = w;
+      grid.append(d);
+    });
 
-/* 공통 액션 버튼 */
-.action-btn {
-  display: inline-block;
-  margin-top: 24px;
-  padding: 12px 28px;
-  background: #6ec1a4;
-  color: #fff;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-.action-btn:hover {
-  background: #57a88c;
-}
+    // 빈 칸
+    const firstDay = new Date(year, month, 1).getDay();
+    for (let i=0; i<firstDay; i++) {
+      const empty = document.createElement('div');
+      empty.className = 'day disabled';
+      grid.append(empty);
+    }
 
-/* 미리보기 영역 */
-.preview {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin: 24px 0;
-}
-.tpl-preview {
-  padding: 24px;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  text-align: center;
-}
-.tpl-preview h3 {
-  font-size: 1.2rem;
-  margin-bottom: 12px;
-}
-.tpl-preview p {
-  font-size: 1rem;
-  margin-bottom: 6px;
-}
+    // 날짜 칸
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+    for (let d=1; d<=daysInMonth; d++) {
+      const cell = document.createElement('div');
+      cell.className = 'day';
+      cell.textContent = d;
+      cell.addEventListener('click', () => {
+        if (cell.classList.toggle('selected')) {
+          cell.textContent = '휴진';
+        } else {
+          cell.textContent = d;
+        }
+      });
+      grid.append(cell);
+    }
+
+    container.append(grid);
+  }
+
+  // 5) 미리보기(PNG 저장)
+  previewBtn.addEventListener('click', () => {
+    const container = document.getElementById('calendar-container');
+    html2canvas(container).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `휴진달력_${new Date().toISOString().slice(0,7)}.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  });
+
+});
